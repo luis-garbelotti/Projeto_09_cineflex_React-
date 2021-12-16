@@ -1,0 +1,55 @@
+.ponter {
+    cursor: pointer;
+}
+
+.home {
+
+    margin-top: 67px;
+
+}
+
+.home-top {
+ 
+    width: 100%;
+    height: 100px;
+    
+    margin-top: 67px;
+
+}
+
+h2 {
+
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: 0.04em;
+    text-align: center;
+
+    color: #293845;
+
+    width: 100%;
+
+}
+
+.movie-list {
+
+    flex-wrap: wrap;
+
+}
+
+.movie-list .movie {
+
+    width: 145px;
+    height: 209px;
+
+    margin: 0 15px 11px 15px;
+
+    box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.1);
+
+    border-radius: 3px;
+
+}
+
+.movie-list div img {
+    width: 129px;
+}
