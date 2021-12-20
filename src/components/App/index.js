@@ -10,14 +10,15 @@ export default function App() {
 
     const [movie, setMovie] = useState(null);
     const [movies, setMovies] = useState(null);
+    const [rota, setRota] = useState('/');
 
     return (
         <BrowserRouter>
-            <TopBar />
+            <TopBar rota={rota} />
             <Routes>
-                <Route path="/" element={<Home movies={movies} setMovies={setMovies} />}> </Route>
-                <Route path="/sessoes/:idFilme" element={<Sessions movie={movie} setMovie={setMovie} />}> </Route>
-                <Route path="/assentos/:idSessao" element={<Seats movie={movie} setMovie={setMovie} />}> </Route>
+                <Route path="/" element={<Home rota={rota} setRota={setRota} movies={movies} setMovies={setMovies} />}> </Route>
+                <Route path="/sessoes/:idFilme" element={<Sessions rota={rota} setRota={setRota} movie={movie} setMovie={setMovie} />}> </Route>
+                <Route path="/assentos/:idSessao" element={<Seats rota={rota} setRota={setRota} movie={movie} setMovie={setMovie} />}> </Route>
             </Routes>
         </BrowserRouter>
     )

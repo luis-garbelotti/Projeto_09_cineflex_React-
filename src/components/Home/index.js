@@ -4,17 +4,17 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../Loading';
 
-export default function Home({ movies, setMovies }) {
+export default function Home(props) {
 
     useEffect(() => {
         const moviesRequisition = axios.get("https://mock-api.driven.com.br/api/v4/cineflex/movies");
 
         moviesRequisition.then((mov) => {
-            setMovies(mov.data);
+            props.setMovies(mov.data);
         });
     }, []);
 
-    if (!movies) {
+    if (!props.movies) {
         return <Loading />
     }
 
@@ -29,11 +29,11 @@ export default function Home({ movies, setMovies }) {
 
             <MovieList className='flex-center'>
 
-                {movies.map((mv) =>
+                {props.movies.map((mv) =>
                 (
                     <Movie className='flex-center pointer' key={mv.id} >
 
-                        <Link to={`/sessoes/${mv.id}`} state={{ posterURL: mv.posterURL, title: mv.title }} >
+                        <Link to={`/sessoes/${mv.id}`} state={{ posterURL: mv.posterURL, title: mv.title, id: mv.id }} >
                             <img src={mv.posterURL} alt={mv.title} />
                         </Link>
 

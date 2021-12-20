@@ -10,6 +10,7 @@ export default function Sessions({ movie, setMovie, posterURL, mvTitle }) {
     const { idFilme } = useParams();
     const location = useLocation();
 
+
     useEffect(() => {
         const sessionsRequisiton = axios.get(`https://mock-api.driven.com.br/api/v4/cineflex/movies/${idFilme}/showtimes`);
 
