@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../Loading';
@@ -28,15 +28,19 @@ export default function Home({ movies, setMovies }) {
             </HomeHeader>
 
             <MovieList className='flex-center'>
+
                 {movies.map((mv) =>
                 (
                     <Movie className='flex-center pointer' key={mv.id} >
-                        <Link to={`/sessoes/${mv.id}`} state={{ posterURL: mv.posterURL }} >
+
+                        <Link to={`/sessoes/${mv.id}`} state={{ posterURL: mv.posterURL, title: mv.title }} >
                             <img src={mv.posterURL} alt={mv.title} />
                         </Link>
+
                     </Movie>
                 )
                 )}
+
             </MovieList>
 
         </>
@@ -44,12 +48,14 @@ export default function Home({ movies, setMovies }) {
 }
 
 const HomeHeader = styled.div`
+
     width: 100%;
     height: 100px;
     
     margin-top: 67px;
 
     h2 {
+
         font-size: 24px;
         font-weight: 400;
         line-height: 28px;
@@ -59,6 +65,7 @@ const HomeHeader = styled.div`
         color: #293845;
 
         width: 100%;
+
     }
 `
 
@@ -67,6 +74,7 @@ const MovieList = styled.ul`
 `
 
 const Movie = styled.div`
+
     width: 145px;
     height: 209px;
 

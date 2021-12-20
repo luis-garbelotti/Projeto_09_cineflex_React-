@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
 import styled from "styled-components"
 import axios from "axios";
@@ -24,34 +24,47 @@ export default function Sessions({ movie, setMovie, posterURL, mvTitle }) {
 
     return (
         <>
-            <SessionsHeader className="flex-center">
+            <Container>
 
-                <h2>Selecione o horário</h2>
-                <img src={posterURL} alt={mvTitle} />
+                <SessionsHeader className="flex-center">
 
-            </SessionsHeader>
+                    <h2>Selecione o horário</h2>
+                    <img src={posterURL} alt={mvTitle} />
 
-            {movie.days.map((day) =>
-                <SessionContent key={day.id}>
-                    <h3>{day.weekday} - {day.date}</h3>
-                    <div>
-                        {day.showtimes.map((time) =>
-                            <SessionTime className="flex-center pointer" key={time.id}>
-                                <span>{time.name}</span>
-                            </SessionTime>
-                        )}
-                    </div>
-                </SessionContent>
-            )}
+                </SessionsHeader>
 
-            <SessionFooter movieTitle={movie.title} location={location} />
+                {movie.days.map((day) =>
+                    <SessionContent key={day.id}>
 
+                        <h3>{day.weekday} - {day.date}</h3>
+                        <div>
 
+                            {day.showtimes.map((time) =>
+                                <SessionTime className="flex-center pointer" key={time.id}>
+                                    <Link to={`/assentos/${time.id}`} state={{ title: movie.title, time: time.name, imgURL: movie.posterURL }}>
+                                        <span>{time.name}</span>
+                                    </Link>
+                                </SessionTime>
+                            )}
+
+                        </div>
+
+                    </SessionContent>
+                )}
+
+                <SessionFooter movieTitle={movie.title} location={location} />
+
+            </Container>
         </>
     )
 }
 
+const Container = styled.div`
+padding-bottom: 120px;
+`
+
 const SessionsHeader = styled.div`
+
     width: 100%;
     height: 100px;
     
@@ -59,6 +72,7 @@ const SessionsHeader = styled.div`
     margin-bottom: 0;
 
     h2 {
+
         font-size: 24px;
         font-weight: 400;
         line-height: 28px;
@@ -68,13 +82,16 @@ const SessionsHeader = styled.div`
         color: #293845;
 
         width: 100%;
+
     }
 `
 
 const SessionContent = styled.div`
+
     margin-left: 23px;
 
     h3 {
+
         font-size: 20px;
         font-weight: 400;
         line-height: 23px;
@@ -85,14 +102,17 @@ const SessionContent = styled.div`
     }
 
     div {
+
         margin-top: 15px;
         margin-bottom: 15px;
         display: flex;
+        
     }
     
 `
 
 const SessionTime = styled.div`
+
     width: 83px;
     height: 43px;
     margin-right: 8px;
@@ -102,6 +122,7 @@ const SessionTime = styled.div`
     border-radius: 3px;
 
     span {
+
         font-size: 18px;
         font-style: normal;
         font-weight: 400;
@@ -109,8 +130,14 @@ const SessionTime = styled.div`
         letter-spacing: 0.02em;
 
         color: #ffffff;
+
     }
-    
+
+    a {
+        text-decoration: none;
+    }
 `
+
+
 
 
