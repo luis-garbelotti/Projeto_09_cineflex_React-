@@ -1,14 +1,24 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Loading from "../Loading";
 
-export default function Seats({ title, time, imgURL }) {
+export default function Seats() {
 
     const [sessionSeats, setSessionSeats] = useState(null)
     const { idSessao } = useParams();
     const [selected, setSelected] = useState(false);
+    const [hiddenSucess, setHiddenSucess] = useState('hidden');
+    const [hidden, setHidden] = useState('')
+    const [name, setName] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [seatsReserve, setSeatsReserve] = useState([]);
+
+    let seatsReserved = [];
+    let seatsReservedName = [];
+
+    const isFilled = (name !== "" && cpf !== "");
 
     useEffect(() => {
         const seatsRequisition = axios.get(`https://mock-api.driven.com.br/api/v4/cineflex/showtimes/${idSessao}/seats`)
@@ -30,11 +40,53 @@ export default function Seats({ title, time, imgURL }) {
 
     }
 
+    function reserve() {
+
+        for (let i = 0; i < sessionSeats.seats.length; i++) {
+
+            if (sessionSeats.seats[i].isAvailable === 'selected') {
+                seatsReserved.push(sessionSeats.seats[i].id);
+                seatsReservedName.push(sessionSeats.seats[i].name);
+            }
+
+            setSeatsReserve([...seatsReservedName]);
+
+        }
+
+        if (seatsReserved.length === 0) {
+
+            alert("Selecione no mínimo 1 (um) assento para continuar");
+
+        } else if (name === '' || cpf === '') {
+
+            alert("Preencha os dados corretamente.");
+
+        } else if (cpf.length !== 11) {
+
+            alert("Digite um CPF válido e apenas com números, sem pontos ( . ) ou traços ( - )")
+
+        } else {
+
+            let reserve = { ids: seatsReserved, name: name, cpf: cpf };
+
+            const promisse = axios.post("https://mock-api.driven.com.br/api/v4/cineflex/seats/book-many", reserve);
+            promisse.then(sendData());
+
+        }
+
+    }
+
+    function sendData() {
+
+        setHiddenSucess('');
+        setHidden('hidden');
+
+    }
 
     return (
         <>
 
-            <Container className="flex-center">
+            <Container className={`flex-center ${hidden}`}>
 
                 <SeatsHeader className="flex-center">
 
@@ -77,14 +129,14 @@ export default function Seats({ title, time, imgURL }) {
                     <div className="buyer">
 
                         <p>Nome do comprador: </p>
-                        <input type="text" placeholder="Digite seu nome..."></input>
+                        <input type="text" onChange={e => setName(e.target.value)} value={name} placeholder="Digite seu nome..."></input>
 
                         <p>CPF do comprador: </p>
-                        <input type="text" placeholder="Digite seu CPF..."></input>
+                        <input type="text" onChange={e => setCpf(e.target.value)} value={cpf} placeholder="Digite seu CPF..."></input>
 
                     </div>
 
-                    <button className="pointer">Reservar assento(s)</button>
+                    <Button className="pointer" isFilled={isFilled} onClick={reserve}>Reservar assento(s)</Button>
 
                 </SeatData>
 
@@ -100,11 +152,49 @@ export default function Seats({ title, time, imgURL }) {
                     </div>
 
                 </SeatFooter>
+
             </Container>
+
+            <SucessContainer className={`flex-center`} hiddenSucess={hiddenSucess}>
+
+                <SucessContent className={`${hiddenSucess}`}>
+                    <div className="sucess">
+                        <p>Pedido feito <br></br> com sucesso!</p>
+
+                        <div className="movie">
+                            <h5>Filme e sessão</h5>
+                            <h6>{sessionSeats.movie.title}</h6>
+                            <h6>{sessionSeats.day.date} {sessionSeats.name}</h6>
+                        </div>
+
+                        <div className="ticket">
+
+                            <h5>Ingressos</h5>
+
+                            {seatsReserve.map((reservedSeat) =>
+                                <h6 key={reservedSeat} > Assento {reservedSeat}</h6>
+                            )}
+
+                        </div>
+
+                        <div className="buyer-data">
+                            <h5>Comprador</h5>
+                            <h6>Nome: {name}</h6>
+                            <h6>CPF: {cpf}</h6>
+                        </div>
+
+                        <div>
+                            <Link to={'/'}>
+                                <button>Voltar para Home</button>
+                            </Link>
+                        </div>
+                    </div>
+                </SucessContent >
+
+            </SucessContainer>
 
         </>
     )
-
 }
 
 const Container = styled.div` 
@@ -140,7 +230,6 @@ const SeatList = styled.div`
 
     width: 100%;
     
-
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -153,9 +242,9 @@ const SeatNumber = styled.div`
     height: 26px;
     margin: 0 3px 26px 3px;
 
-    border: 1px solid ${({ seatAvailable, status }) => !seatAvailable ? '#F7C52B' : seatAvailable === 'selected' ? '#1AAE9E' : '#7B8B99'};
+    border: 1px solid ${({ seatAvailable }) => !seatAvailable ? '#F7C52B' : seatAvailable === 'selected' ? '#1AAE9E' : '#7B8B99'};
 
-    background-color: ${({ seatAvailable, status }) => !seatAvailable ? '#FBE192' : seatAvailable === 'selected' ? '#8DD7CF' : '#C3CFD9'};
+    background-color: ${({ seatAvailable }) => !seatAvailable ? '#FBE192' : seatAvailable === 'selected' ? '#8DD7CF' : '#C3CFD9'};
 
     border-radius: 50%;
 
@@ -286,19 +375,19 @@ const SeatData = styled.div`
         text-align: left;
 
     }
+`
 
-    button {
+const Button = styled.button`
 
-        width: 225px;
-        height: 42px;
-        margin-top: 57px;
-        
-        border-radius: 3px;
+    width: 225px;
+    height: 42px;
+    margin-top: 57px;
 
-        background-color: #E8833A;
-        color: #ffffff;
+    border-radius: 3px;
 
-    }
+    background-color: ${(props) => props.isFilled ? '#E8833A' : '#C0BCB9'};
+    color: #ffffff;
+
 `
 
 const SeatFooter = styled.div`
@@ -357,3 +446,86 @@ const SeatFooter = styled.div`
         
     }
 `
+
+const SucessContainer = styled.div`
+    width: 100%;
+    padding-top: 100px;
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;  
+
+`
+
+const SucessContent = styled.div`
+    
+    .sucess {
+        display: flex;
+        flex-direction: column;
+    }
+
+    p {
+
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 28px;
+        letter-spacing: 0.04em;
+        text-align: center;
+
+        color: #247A6B;
+
+        width: 100%;
+
+        margin-bottom: 40px;
+
+    }
+
+    button {
+
+        width: 225px;
+        height: 42px;
+        margin-top: 70px;
+        margin-left: 12%;
+        
+
+        border-radius: 3px;
+
+        background-color: #E8833A;
+
+        color: #ffffff;
+
+    }
+
+    h5 {
+
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 28px;
+        letter-spacing: 0.04em;
+        text-align: left;
+
+        color: #293845;
+
+        margin-bottom: 15px;
+
+    }
+
+    h6 {
+
+        font-size: 22px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 26px;
+        letter-spacing: 0.04em;
+        text-align: left;
+
+        color: #293845;
+    }
+
+    .movie, .ticket, .buyer-data {
+        margin-bottom: 25px;
+    } 
+`
+

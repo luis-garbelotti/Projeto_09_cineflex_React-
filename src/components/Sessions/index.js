@@ -1,5 +1,5 @@
 import { Link, useLocation, useParams } from "react-router-dom"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styled from "styled-components"
 import axios from "axios";
 import Loading from "../Loading";
@@ -122,7 +122,7 @@ const SessionTime = styled.div`
     border-radius: 3px;
 
     span {
-
+        
         font-size: 18px;
         font-style: normal;
         font-weight: 400;
