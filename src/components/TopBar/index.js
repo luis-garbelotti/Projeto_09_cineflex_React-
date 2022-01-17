@@ -1,19 +1,23 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react/cjs/react.development';
 import styled from 'styled-components'
 
-export default function TopBar({ rota, setRota }) {
+export default function TopBar() {
     const [buttonHidden, setButtonHidden] = useState('');
 
     let navigate = useNavigate();
+    const { pathname } = useLocation();
+    const isHomePage = pathname === '/';
 
     return (
         <>
 
             <Topbar className="flex-center">
-                <button className={`${buttonHidden}`} onClick={() => navigate(rota)}>
-                    <ion-icon name="arrow-back"></ion-icon>
-                </button>
+                {!isHomePage && (
+                    <button className={`${buttonHidden} pointer`} onClick={() => navigate(-1)}>
+                        <ion-icon name="arrow-back"></ion-icon>
+                    </button>
+                )}
 
                 <h1>CINEFLEX</h1>
             </Topbar>
