@@ -1,9 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react/cjs/react.development';
 import styled from 'styled-components'
 
 export default function TopBar() {
-    const [buttonHidden, setButtonHidden] = useState('');
 
     let navigate = useNavigate();
     const { pathname } = useLocation();
@@ -14,7 +12,7 @@ export default function TopBar() {
 
             <Topbar className="flex-center">
                 {!isHomePage && (
-                    <button className={`${buttonHidden} pointer`} onClick={() => navigate(-1)}>
+                    <button className="pointer" onClick={() => navigate(-1)}>
                         <ion-icon name="arrow-back"></ion-icon>
                     </button>
                 )}

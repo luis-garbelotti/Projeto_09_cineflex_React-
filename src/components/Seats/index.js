@@ -486,8 +486,7 @@ const SucessContent = styled.div`
         width: 225px;
         height: 42px;
         margin-top: 70px;
-        margin-left: 12%;
-        
+        margin-bottom: 30px;
 
         border-radius: 3px;
 
